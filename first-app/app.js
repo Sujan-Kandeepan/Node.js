@@ -1,8 +1,8 @@
-function sayHello(name) {
-  console.log('Hello ' + name);
-}
+const Logger = require('./logger');
+const logger = new Logger();
 
-sayHello('Sujan');
+logger.on('messageLogged', (arg) => {
+  console.log('Listener called', arg);
+});
 
-// errors: window object not defined in Node
-// console.log(window);
+logger.log('message');
