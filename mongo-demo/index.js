@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/playground', { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost:27017/mongo-exercises', { useNewUrlParser: true })
   .then(() => console.log('Connected to MongoDB'))
   .catch(error => console.error('Could not connect to MongoDB', error));
 
@@ -47,5 +47,52 @@ async function getCourses() {
     .select({ name: 1, tags: 1 }); // .countDocuments() for count instead of result
   console.log(courses);
 }
+
+async function updateCourse(id) {
+  const course = await Course.findById(id);
+  if (!course) return console.log('error');
+  if (course.isPublished) return console.log('cannot update');
+  // course.isPublished = true;
+  // course.author = 'Another Author';
+  course.set({
+    isPublished: true,
+    author: 'Another Author'
+  });
+  const result = await course.save();
+  console.log(result);
+}
+
+async function updateCourse2(id) {
+  const result = await Course.update({ _id: id }, {
+    $set: {
+      author: 'Mosh',
+      isPublished: false
+    }
+  });
+
+  console.log(result);
+}
+
+async function updateCourse3(id) {
+  const course = await Course.findByIdAndUpdate(id, {
+    $set: {
+      author: 'Jack',
+      isPublished: true
+    }
+  }, { new: true });
+
+  console.log(course);
+}
+
+async function removeCourse(id) {
+  const result = await Course.deleteOne({ _id: id });
+  console.log(result);
+}
+
+async function removeCourse2(id) {
+  const course = await Course.findByIdAndRemove(id);
+  console.log(course);
+}
+
 
 getCourses();
