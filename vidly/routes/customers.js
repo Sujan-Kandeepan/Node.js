@@ -11,9 +11,11 @@ router.get('/', async (request, response) => {
 router.get('/:id', async (request, response) => {
   try {
     const customer = await Customer.findById(request.params.id).select('_id name phone isGold');
+    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+
     response.send(customer);
-  } catch {
-    return response.status(404).send('The customer with the given ID was not found.');
+  } catch (ex) {
+    return response.status(400).send(ex.message);
   }
 });
 
@@ -24,6 +26,7 @@ router.post('/', async (request, response) => {
   try {
     const { name, phone, isGold } = request.body;
     let customer = new Customer({ name, phone, isGold });
+
     customer = await customer.save();
     response.send(customer);
   } catch (ex) {
@@ -37,19 +40,24 @@ router.put('/:id', async (request, response) => {
 
   try {
     const { name, phone, isGold } = request.body;
-    let customer = await Customer.findByIdAndUpdate(request.params.id, { name, phone, isGold }, { new: true });
+
+    const customer = await Customer.findByIdAndUpdate(request.params.id, { name, phone, isGold }, { new: true });
+    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+
     response.send(customer);
   } catch (ex) {
-    response.status(400).send(ex.message);
+    return response.status(400).send(ex.message);
   }
 });
 
 router.delete('/:id', async(request, response) => {
   try {
     const customer = await Customer.findByIdAndRemove(request.params.id);
+    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+
     response.send(customer);
-  } catch {
-    return response.status(404).send('The customer with the given ID was not found');
+  } catch (ex) {
+    return response.status(400).send(ex.message);
   }
 });
 

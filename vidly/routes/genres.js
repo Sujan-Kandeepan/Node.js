@@ -11,9 +11,11 @@ router.get('/', async (request, response) => {
 router.get('/:id', async (request, response) => {
   try {
     const genre = await Genre.findById(request.params.id).select('_id name');
+    if (!genre) return response.status(404).send('The genre with the given ID was not found');
+
     response.send(genre);
-  } catch {
-    response.status(404).send('The genre with the given ID was not found');
+  } catch (ex) {
+    return response.status(400).send(ex.message);
   }
 });
 
@@ -36,18 +38,22 @@ router.put('/:id', async (request, response) => {
 
   try {
     const genre = await Genre.findByIdAndUpdate(request.params.id, { name: request.body.name }, { new: true });
+    if (!genre) return response.status(404).send('The genre with the given ID was not found');
+
     response.send(genre);
-  } catch {
-    return response.status(404).send('The genre with the given ID was not found');
+  } catch (ex) {
+    response.status(400).send(ex.message);
   }
 });
 
 router.delete('/:id', async (request, response) => {
   try {
     const genre = await Genre.findByIdAndRemove(request.params.id);
+    if (!genre) return response.status(404).send('The genre with the given ID was not found');
+    
     response.send(genre);
-  } catch {
-    return response.status(404).send('The genre with the given ID was not found');
+  } catch (ex) {
+    response.status(400).send(ex.message);
   }
 });
 
