@@ -30,9 +30,7 @@ router.post('/', async (request, response) => {
   try {
     const { title, numberInStock, dailyRentalRate } = request.body;
     const { _id, name } = genre;
-
     const movie = new Movie({ title, genre: { _id, name }, numberInStock, dailyRentalRate });
-    if (!movie) return response.status(404).send('The movie with the given ID was not found.');
 
     await movie.save();
     response.send(movie);

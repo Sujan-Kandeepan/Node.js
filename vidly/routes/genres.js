@@ -24,8 +24,8 @@ router.post('/', async (request, response) => {
   if (error) return response.status(400).send(error.details[0].message);
 
   try {
-    let genre = new Genre({ name: request.body.name });
-    genre = await genre.save();
+    const genre = new Genre({ name: request.body.name });
+    await genre.save();
     response.send(genre);
   } catch (ex) {
     response.status(400).send(ex.message);

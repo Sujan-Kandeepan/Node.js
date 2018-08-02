@@ -25,9 +25,9 @@ router.post('/', async (request, response) => {
 
   try {
     const { name, phone, isGold } = request.body;
-    let customer = new Customer({ name, phone, isGold });
+    const customer = new Customer({ name, phone, isGold });
 
-    customer = await customer.save();
+    await customer.save();
     response.send(customer);
   } catch (ex) {
     response.status(400).send(ex.message);
