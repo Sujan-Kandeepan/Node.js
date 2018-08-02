@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 
+const auth = require('../middleware/auth');
 const { Rental, validate } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
@@ -14,7 +15,7 @@ router.get('/', async (request, response) => {
   response.send(rentals);
 });
 
-router.post('/', async (request, response) => {
+router.post('/', auth, async (request, response) => {
   const { error } = validate(request.body);
   if (error) return response.status(400).send(error.details[0].message);
 
