@@ -8,7 +8,7 @@ const { User, validate } = require('../models/user');
 router.post('/', async (request, response) => {
   try {
     const { error } = validate(request.body);
-    if (error) return response.status(404).send(error.details[0].message);
+    if (error) return response.status(400).send(error.details[0].message);
 
     const { name, email, password } = request.body;
 
@@ -18,9 +18,10 @@ router.post('/', async (request, response) => {
     user = new User({ name, email, password });
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
-    
     await user.save();
-    response.send(_.pick(user, ['_id', 'name', 'email']));
+
+    const token = user.generateAuthToken();
+    response.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']));
   } catch (ex) {
     return response.status(400).send(ex.message);
   }
