@@ -3,12 +3,7 @@ require('winston-mongodb');
 require('express-async-errors');
 
 module.exports = function() {
-  // process.on('uncaughtException', (ex) => {
-  //   winston.error(ex.message, ex);
-  //   process.exit(1);
-  // });
-
-  process.on('unhandledRejection', (ex) => {
+  process.on('unhandledRejection', (ex) => { // or uncaughtException
     // winston.error(ex.message, ex);
     // process.exit(1);
     throw ex; // exception now caught by winston
