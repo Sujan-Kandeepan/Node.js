@@ -10,6 +10,6 @@ module.exports = function auth(request, response, next) {
     request.user = decoded;
     next();
   } catch (ex) {
-    response.status(401).send('Access denied. Invalid token.')
+    response.status(400).send('Invalid token.');
   }
 }

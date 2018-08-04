@@ -3,6 +3,7 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validateObjectId = require('../middleware/validateObjectId');
 const { Customer, validate } = require('../models/customer');
 
 router.get('/', async (request, response) => {
@@ -10,57 +11,41 @@ router.get('/', async (request, response) => {
   response.send(customers);
 });
 
-router.get('/:id', async (request, response) => {
-  try {
-    const customer = await Customer.findById(request.params.id).select('_id name phone isGold');
-    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+router.get('/:id', validateObjectId, async (request, response) => {
+  const customer = await Customer.findById(request.params.id).select('_id name phone isGold');
+  if (!customer) return response.status(404).send('The customer with the given ID was not found.');
 
-    response.send(customer);
-  } catch (ex) {
-    return response.status(400).send(ex.message);
-  }
+  response.send(customer);
 });
 
 router.post('/', auth, async (request, response) => {
   const { error } = validate(request.body);
   if (error) return response.status(400).send(error.details[0].message);
 
-  try {
-    const { name, phone, isGold } = request.body;
-    const customer = new Customer({ name, phone, isGold });
+  const { name, phone, isGold } = request.body;
+  const customer = new Customer({ name, phone, isGold });
 
-    await customer.save();
-    response.send(customer);
-  } catch (ex) {
-    response.status(400).send(ex.message);
-  }
+  await customer.save();
+  response.send(customer);
 });
 
-router.put('/:id', auth, async (request, response) => {
+router.put('/:id', [auth, validateObjectId], async (request, response) => {
   const { error } = validate(request.body);
   if (error) return response.status(400).send(error.details[0].message);
 
-  try {
-    const { name, phone, isGold } = request.body;
+  const { name, phone, isGold } = request.body;
 
-    const customer = await Customer.findByIdAndUpdate(request.params.id, { name, phone, isGold }, { new: true });
-    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+  const customer = await Customer.findByIdAndUpdate(request.params.id, { name, phone, isGold }, { new: true });
+  if (!customer) return response.status(404).send('The customer with the given ID was not found.');
 
-    response.send(customer);
-  } catch (ex) {
-    return response.status(400).send(ex.message);
-  }
+  response.send(customer);
 });
 
-router.delete('/:id', [auth, admin], async(request, response) => {
-  try {
-    const customer = await Customer.findByIdAndRemove(request.params.id);
-    if (!customer) return response.status(404).send('The customer with the given ID was not found.');
+router.delete('/:id', [auth, admin, validateObjectId], async(request, response) => {
+  const customer = await Customer.findByIdAndRemove(request.params.id);
+  if (!customer) return response.status(404).send('The customer with the given ID was not found.');
 
-    response.send(customer);
-  } catch (ex) {
-    return response.status(400).send(ex.message);
-  }
+  response.send(customer);
 });
 
 module.exports = router;
