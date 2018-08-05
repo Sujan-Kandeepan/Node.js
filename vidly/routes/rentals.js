@@ -4,7 +4,8 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middleware/auth');
-const { Rental, validate } = require('../models/rental');
+const validate = require('../middleware/validate');
+const { Rental, validateRental } = require('../models/rental');
 const { Customer } = require('../models/customer');
 const { Movie } = require('../models/movie');
 
@@ -15,10 +16,7 @@ router.get('/', async (request, response) => {
   response.send(rentals);
 });
 
-router.post('/', auth, async (request, response) => {
-  const { error } = validate(request.body);
-  if (error) return response.status(400).send(error.details[0].message);
-
+router.post('/', [auth, validate(validateRental)], async (request, response) => {
   let customer = await Customer.findById(request.body.customerId);
   if (!customer) return response.status(404).send('The customer with the given ID was not found.');
 

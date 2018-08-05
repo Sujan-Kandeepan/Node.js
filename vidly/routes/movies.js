@@ -3,8 +3,9 @@ const router = express.Router();
 
 const auth = require('../middleware/auth');
 const admin = require('../middleware/admin');
+const validate = require('../middleware/validate');
 const validateObjectId = require('../middleware/validateObjectId');
-const { Movie, validate } = require('../models/movie');
+const { Movie, validateMovie } = require('../models/movie');
 const { Genre } = require('../models/genre');
 
 router.get('/', async (request, response) => {
@@ -19,10 +20,7 @@ router.get('/:id', validateObjectId, async (request, response) => {
   response.send(movie);
 });
 
-router.post('/', auth, async (request, response) => {
-  const { error } = validate(request.body);
-  if (error) return response.status(400).send(error.details[0].message);
-
+router.post('/', [auth, validate(validateMovie)], async (request, response) => {
   let genre = await Genre.findById(request.body.genreId);
   if (!genre) return response.status(404).send('The genre with the given ID was not found.');
 
@@ -34,10 +32,7 @@ router.post('/', auth, async (request, response) => {
   response.send(movie);
 });
 
-router.put('/:id', [auth, validateObjectId], async (request, response) => {
-  const { error } = validate(request.body);
-  if (error) return response.status(400).send(error.details[0].message);
-
+router.put('/:id', [auth, validateObjectId, validate(validateMovie)], async (request, response) => {
   let genre = await Genre.findById(request.body.genreId);
   if (!genre) return response.status(404).send('The genre with the given ID was not found.');
 

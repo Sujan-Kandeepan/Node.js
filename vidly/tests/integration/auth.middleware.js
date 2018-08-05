@@ -23,7 +23,7 @@ module.exports = function() {
     });
     
     afterEach(async () => {
-      server.close();
+      await server.close();
       await Genre.remove({});
     });
   
@@ -47,4 +47,4 @@ module.exports = function() {
       expect(response.status).toBe(200);
     });
   });
-}
+};

@@ -10,8 +10,8 @@ module.exports = function() {
   describe('/api/genres', () => {
     beforeEach(() => { server = require('../../index'); });
     afterEach(async () => {
-      server.close();
       await Genre.remove({});
+      await server.close();
     });
   
     describe('GET /', () => {
@@ -103,20 +103,20 @@ module.exports = function() {
         expect(response.body).toHaveProperty('name', 'genre1');
       });
     });
-
+  
     describe('PUT /:id', () => {
       let genre;
       let token;
       let name;
       let id;
-
+  
       const execute = () => {
         return request(server)
           .put('/api/genres/' + id)
           .set('x-auth-token', token)
           .send({ name });
       };
-
+  
       beforeEach(async () => {
         genre = new Genre({ name: 'genre1' });
         token = new User().generateAuthToken();
@@ -124,7 +124,7 @@ module.exports = function() {
         id = genre._id;
         await genre.save();
       });
-
+  
       it('should return 401 if client is not authenticated', async () => {
         token = '';
         const response = await execute();
@@ -145,14 +145,14 @@ module.exports = function() {
   
         expect(response.status).toBe(400);
       });
-
+  
       it('should return 404 if ID is invalid', async () => {
         id = 1;
         const response = await execute();
   
         expect(response.status).toBe(404);
       });
-
+  
       it('should return 404 if no genre with the given ID was found', async () => {
         id = mongoose.Types.ObjectId();
         const response = await execute();
@@ -176,47 +176,47 @@ module.exports = function() {
         expect(response.body).toHaveProperty('name', name);
       });
     });
-
+  
     describe('DELETE /:id', () => {
       let genre;
       let token;
       let id;
-
+  
       const execute = () => {
         return request(server)
           .delete('/api/genres/' + id)
           .set('x-auth-token', token)
           .send();
       };
-
+  
       beforeEach(async () => {
         genre = new Genre({ name: 'genre1' });
         token = new User({ isAdmin: true }).generateAuthToken();
         id = genre._id;
         await genre.save();
       });
-
+  
       it('should return 401 if client is not authenticated', async () => {
         token = '';
         const response = await execute();
   
         expect(response.status).toBe(401);
       });
-
+  
       it('should return 403 if client is not an admin', async () => {
         token = new User().generateAuthToken({ isAdmin: true });
         const response = await execute();
   
         expect(response.status).toBe(403);
       });
-
+  
       it('should return 404 if ID is invalid', async () => {
         id = 1;
         const response = await execute();
   
         expect(response.status).toBe(404);
       });
-
+  
       it('should return 404 if no genre with the given ID was found', async () => {
         id = mongoose.Types.ObjectId();
         const response = await execute();
@@ -241,4 +241,4 @@ module.exports = function() {
       });
     });
   });
-}
+};

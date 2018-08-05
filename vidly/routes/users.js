@@ -4,17 +4,15 @@ const express = require('express');
 const router = express.Router();
 
 const auth = require('../middleware/auth');
-const { User, validate } = require('../models/user');
+const validate = require('../middleware/validate');
+const { User, validateUser } = require('../models/user');
 
 router.get('/me', auth, async (request, response) => {
   const user = await User.findById(request.user._id).select('-password');
   response.send(user);
 });
 
-router.post('/', async (request, response) => {
-  const { error } = validate(request.body);
-  if (error) return response.status(400).send(error.details[0].message);
-
+router.post('/', validate(validateUser), async (request, response) => {
   const { name, email, password, isAdmin } = request.body;
 
   let user = await User.findOne({ email });
