@@ -51,8 +51,7 @@ module.exports = function() {
     });
   
     describe('POST /', () => {
-      let token;
-      let name;
+      let token, name;
   
       const execute = () => {
         return request(server)
@@ -112,10 +111,7 @@ module.exports = function() {
     });
   
     describe('PUT /:id', () => {
-      let genre;
-      let token;
-      let name;
-      let id;
+      let genre, token, name, id;
   
       const execute = () => {
         return request(server)
@@ -192,9 +188,7 @@ module.exports = function() {
     });
   
     describe('DELETE /:id', () => {
-      let genre;
-      let token;
-      let id;
+      let genre, token, id;
   
       const execute = () => {
         return request(server)

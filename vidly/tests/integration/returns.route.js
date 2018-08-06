@@ -11,11 +11,7 @@ let server;
 
 module.exports = function() {
   describe('/api/returns', () => {
-    let rental;
-    let movie;
-    let customerId;
-    let movieId;
-    let token;
+    let rental, movie, customerId, movieId, token;
   
     const execute = () => {
       return request(server)

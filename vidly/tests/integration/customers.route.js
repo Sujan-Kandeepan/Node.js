@@ -57,10 +57,7 @@ module.exports = function() {
     });
 
     describe('POST /', () => {
-      let token;
-      let name;
-      let phone;
-      let isGold;
+      let token, name, phone, isGold;
   
       const execute = () => {
         return request(server)
@@ -145,12 +142,7 @@ module.exports = function() {
     });
 
     describe('PUT /:id', () => {
-      let customer;
-      let token;
-      let name;
-      let phone;
-      let isGold;
-      let id;
+      let customer, token, name, phone, isGold, id;
   
       const execute = () => {
         return request(server)
@@ -252,9 +244,7 @@ module.exports = function() {
     });
 
     describe('DELETE /:id', () => {
-      let customer;
-      let token;
-      let id;
+      let customer, token, id;
   
       const execute = () => {
         return request(server)
