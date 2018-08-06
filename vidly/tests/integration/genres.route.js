@@ -31,7 +31,7 @@ module.exports = function() {
   
     describe('GET /:id', () => {
       it('should return a genre if valid ID is passed', async () => {
-        const genre = new Genre({ name: 'genre1' });
+        const genre = new Genre({ name: 'genre' });
         await genre.save();
   
         const response = await request(server).get('/api/genres/' + genre._id);
@@ -63,7 +63,7 @@ module.exports = function() {
   
       beforeEach(() => {
         token = new User().generateAuthToken();
-        name = 'genre1';
+        name = 'genre';
       });
   
       it('should return 401 if client is not authenticated', async () => {
@@ -72,15 +72,22 @@ module.exports = function() {
   
         expect(response.status).toBe(401);
       });
+
+      it('should return 400 if genre name is missing', async () => {
+        name = null;
+        const response = await execute();
   
-      it('should return 400 if genre is less than 5 characters', async () => {
+        expect(response.status).toBe(400);
+      });
+  
+      it('should return 400 if genre name is less than 5 characters', async () => {
         name = 'abc';
         const response = await execute();
   
         expect(response.status).toBe(400);
       });
   
-      it('should return 400 if genre is more than 50 characters', async () => {
+      it('should return 400 if genre name is more than 50 characters', async () => {
         name = new Array(52).join('a');
         const response = await execute();
   
@@ -90,7 +97,7 @@ module.exports = function() {
       it('should save the genre if it is valid', async () => {
         const response = await execute();
   
-        const genre = await Genre.find({ name: 'genre1' });
+        const genre = await Genre.find({ name });
         expect(response.status).toBe(200);
         expect(genre).not.toBe(null);
       });
@@ -100,7 +107,7 @@ module.exports = function() {
   
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty('_id');
-        expect(response.body).toHaveProperty('name', 'genre1');
+        expect(response.body).toHaveProperty('name', name);
       });
     });
   
@@ -132,14 +139,21 @@ module.exports = function() {
         expect(response.status).toBe(401);
       });
   
-      it('should return 400 if genre is less than 5 characters', async () => {
+      it('should return 400 if genre name is missing', async () => {
+        name = null;
+        const response = await execute();
+  
+        expect(response.status).toBe(400);
+      });
+  
+      it('should return 400 if genre name is less than 5 characters', async () => {
         name = 'abc';
         const response = await execute();
   
         expect(response.status).toBe(400);
       });
   
-      it('should return 400 if genre is more than 50 characters', async () => {
+      it('should return 400 if genre name is more than 50 characters', async () => {
         name = new Array(52).join('a');
         const response = await execute();
   
@@ -190,7 +204,7 @@ module.exports = function() {
       };
   
       beforeEach(async () => {
-        genre = new Genre({ name: 'genre1' });
+        genre = new Genre({ name: 'genre' });
         token = new User({ isAdmin: true }).generateAuthToken();
         id = genre._id;
         await genre.save();
