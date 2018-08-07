@@ -50,4 +50,4 @@ function validateRental(rental) {
 
 exports.Rental = Rental;
 exports.rentalSchema = rentalSchema;
-exports.validate = validateRental;
+exports.validateRental = validateRental;
