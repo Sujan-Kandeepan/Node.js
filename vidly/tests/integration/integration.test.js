@@ -1,4 +1,5 @@
 require('./auth.middleware')();
+require('./auth.route')();
 require('./customers.route')();
 require('./genres.route')();
 require('./movies.route')();

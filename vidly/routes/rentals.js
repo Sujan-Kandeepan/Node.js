@@ -39,18 +39,14 @@ router.post('/', [auth, validate(validateRental)], async (request, response) => 
 
   let rental = new Rental({ customer, movie });
   
-  try {
-    await new Fawn.Task()
-      .save('rentals', rental)
-      .update('movies', { _id: movie._id }, {
-        $inc: { numberInStock: -1 }
-      })
-      .run();
+  await new Fawn.Task()
+    .save('rentals', rental)
+    .update('movies', { _id: movie._id }, {
+      $inc: { numberInStock: -1 }
+    })
+    .run();
 
-    response.send(rental);
-  } catch (ex) {
-    return response.status(400).send(ex.message);
-  }
+  response.send(rental);
 });
 
 module.exports = router;
