@@ -67,27 +67,27 @@ module.exports = function() {
       });
 
       it('should return all rentals', async () => {
-        const result = await request(server)
+        const response = await request(server)
           .get('/api/rentals')
           .set('x-auth-token', token)
           .send();
 
-        expect(result.status).toBe(200);
-        expect(result.body.length).toBe(2);
-        expect(result.body.some(r => r.customer.name === 'customer1')).toBeTruthy();
-        expect(result.body.some(r => r.customer.name === 'customer2')).toBeTruthy();
-        expect(result.body.some(r => r.customer.phone === '12345')).toBeTruthy();
-        expect(result.body.some(r => r.customer.phone === '67890')).toBeTruthy();
-        expect(result.body.some(r => r.customer.isGold === false)).toBeTruthy();
-        expect(result.body.some(r => r.customer.isGold === true)).toBeTruthy();
-        expect(result.body.some(r => r.movie.title === 'movie1')).toBeTruthy();
-        expect(result.body.some(r => r.movie.title === 'movie2')).toBeTruthy();
-        expect(result.body.some(r => r.movie.genre.name === 'genre1')).toBeTruthy();
-        expect(result.body.some(r => r.movie.genre.name === 'genre2')).toBeTruthy();
-        expect(result.body.some(r => r.movie.numberInStock === 1)).toBeTruthy();
-        expect(result.body.some(r => r.movie.numberInStock === 2)).toBeTruthy();
-        expect(result.body.some(r => r.movie.dailyRentalRate === 1)).toBeTruthy();
-        expect(result.body.some(r => r.movie.dailyRentalRate === 2)).toBeTruthy();
+        expect(response.status).toBe(200);
+        expect(response.body.length).toBe(2);
+        expect(response.body.some(r => r.customer.name === 'customer1')).toBeTruthy();
+        expect(response.body.some(r => r.customer.name === 'customer2')).toBeTruthy();
+        expect(response.body.some(r => r.customer.phone === '12345')).toBeTruthy();
+        expect(response.body.some(r => r.customer.phone === '67890')).toBeTruthy();
+        expect(response.body.some(r => r.customer.isGold === false)).toBeTruthy();
+        expect(response.body.some(r => r.customer.isGold === true)).toBeTruthy();
+        expect(response.body.some(r => r.movie.title === 'movie1')).toBeTruthy();
+        expect(response.body.some(r => r.movie.title === 'movie2')).toBeTruthy();
+        expect(response.body.some(r => r.movie.genre.name === 'genre1')).toBeTruthy();
+        expect(response.body.some(r => r.movie.genre.name === 'genre2')).toBeTruthy();
+        expect(response.body.some(r => r.movie.numberInStock === 1)).toBeTruthy();
+        expect(response.body.some(r => r.movie.numberInStock === 2)).toBeTruthy();
+        expect(response.body.some(r => r.movie.dailyRentalRate === 1)).toBeTruthy();
+        expect(response.body.some(r => r.movie.dailyRentalRate === 2)).toBeTruthy();
       });
     });
 
@@ -126,57 +126,57 @@ module.exports = function() {
 
       it('should return 401 if client is not logged in', async () => {
         token = '';
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(401);
+        expect(response.status).toBe(401);
       });
   
       it('should return 400 if customerId is not provided', async () => {
         customerId = '';
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(400);
+        expect(response.status).toBe(400);
       });
 
       it('should return 404 if no customer with the given ID was found', async () => {
         customerId = mongoose.Types.ObjectId();
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(404);
+        expect(response.status).toBe(404);
       });
   
       it('should return 400 if movieId is not provided', async () => {
         movieId = '';
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(400);
+        expect(response.status).toBe(400);
       });
   
       it('should return 404 if no movie with the given ID was found', async () => {
         movieId = mongoose.Types.ObjectId();
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(404);
+        expect(response.status).toBe(404);
       });
 
       it('should return 400 if the movie is out of stock', async () => {
         movie.numberInStock = 0;
         await movie.save();
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(400);
+        expect(response.status).toBe(400);
       });
 
       it('should return 200 if the request is valid', async () => {
-        const result = await execute();
+        const response = await execute();
         
-        expect(result.status).toBe(200);
+        expect(response.status).toBe(200);
       });
   
       it('should return the rental if the request is valid', async () => {
-        const result = await execute();
+        const response = await execute();
         
-        expect(Object.keys(result.body)).toEqual(
+        expect(Object.keys(response.body)).toEqual(
           expect.arrayContaining(['customer', 'movie', 'dateOut'])
         );
       });

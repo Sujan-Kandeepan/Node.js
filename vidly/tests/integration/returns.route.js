@@ -54,50 +54,50 @@ module.exports = function() {
   
     it('should return 401 if client is not logged in', async () => {
       token = '';
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(401);
+      expect(response.status).toBe(401);
     });
 
     it('should return 400 if customerId is not provided', async () => {
       customerId = '';
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(400);
+      expect(response.status).toBe(400);
     });
 
     it('should return 400 if movieId is not provided', async () => {
       movieId = '';
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(400);
+      expect(response.status).toBe(400);
     });
 
     it('should return 404 if no rental with the given ID was found', async () => {
       await Rental.remove({});
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(404);
+      expect(response.status).toBe(404);
     });
 
     it('should return 400 if the specified rental was already processed', async () => {
       rental.dateReturned = Date.now();
       await rental.save({});
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(400);
+      expect(response.status).toBe(400);
     });
 
     it('should return 200 if the request is valid', async () => {
-      const result = await execute();
+      const response = await execute();
       
-      expect(result.status).toBe(200);
+      expect(response.status).toBe(200);
     });
 
     it('should return the rental if the request is valid', async () => {
-      const result = await execute();
+      const response = await execute();
       
-      expect(Object.keys(result.body)).toEqual(
+      expect(Object.keys(response.body)).toEqual(
         expect.arrayContaining(['customer', 'movie', 'dateOut', 'dateReturned', 'rentalFee'])
       );
     });
